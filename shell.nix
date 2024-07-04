@@ -1,4 +1,4 @@
-with import <nixpkgs> {};
+with import <nixpkgs> { };
 mkShell {
   NIX_LD_LIBRARY_PATH = lib.makeLibraryPath [
     glibc
@@ -10,5 +10,7 @@ mkShell {
   NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
   shellHook = ''
     export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
+    source .venv/bin/activate
+    trap "exit 0" EXIT
   '';
 }
