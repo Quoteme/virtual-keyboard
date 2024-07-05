@@ -1,6 +1,7 @@
 import dearpygui.dearpygui as dpg
 
-kes = [
+# Define the keyboard layout
+keyboard_layout = [
     ["`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "BACKSPACE"],
     ["TAB", "Q", "W", "E", "R", "T", "Y", "U", "I", "O", "P", "[", "]", "\\"],
     ["CAPS", "A", "S", "D", "F", "G", "H", "J", "K", "L", ";", "'", "ENTER"],
@@ -8,25 +9,42 @@ kes = [
     ["CTRL", "WIN", "ALT", "SPACE", "ALT", "FN", "MENU", "CTRL"],
 ]
 
+# Create the DearPyGui context
 dpg.create_context()
 
-with dpg.window(
-    tag="Primary Window",
-):
-    dpg.add_text("Hello, world")
+# Create the main window
+with dpg.window(tag="Primary Window"):
+    # Create the table for the keyboard layout
     with dpg.table(header_row=False):
-        for row in kes:
+        for col in range(0, len(keyboard_layout[0])):
+            dpg.add_table_column()
+        for row in keyboard_layout:
             with dpg.table_row():
                 for key in row:
-                    dpg.add_table_cell(label=key)
-                    dpg.add_button(label=key, width=50, height=50)
+                    button_width = 30
+                    button_height = 30
+                    if key == "SPACE":
+                        button_width = 300  # Make the space bar larger
+                    elif key in ["BACKSPACE", "ENTER", "SHIFT", "TAB", "CAPS"]:
+                        button_width = 100  # Make special keys wider
 
+                    # Create a table cell and place a button inside it
+                    with dpg.table_cell():
+                        dpg.add_button(
+                            label=key, width=button_width, height=button_height
+                        )
+
+
+# Create the viewport with a suitable size for the keyboard
 dpg.create_viewport(
-    title="Custom Title",
-    width=600,
-    height=200,
-    decorated=False,
+    title="Virtual Keyboard",
+    width=500,
+    height=300,
+    decorated=True,
+    resizable=False,
 )
+
+# Setup and show the DearPyGui
 dpg.setup_dearpygui()
 dpg.show_viewport()
 dpg.set_primary_window("Primary Window", True)
