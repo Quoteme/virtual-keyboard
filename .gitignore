@@ -1,2 +1,3 @@
 .venv
 .nix/fix-python
+**/__pycache__
