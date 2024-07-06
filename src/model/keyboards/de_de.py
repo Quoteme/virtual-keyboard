@@ -46,7 +46,7 @@ keyboard = Keyboard(
             Key("P", "P", [], 30, 30, 5),
             Key("Ü", "Ü", [], 30, 30, 5),
             Key("+", "+", [Key("*", "*", [], 30, 30, 5)], 30, 30, 5),
-            Key("ENTER", "↵", [], 45, 30, 5),  # Wider key for enter
+            Key("#", "#", [], 45, 30, 5),
         ],
         [
             # Row 3
@@ -62,7 +62,7 @@ keyboard = Keyboard(
             Key("L", "L", [], 30, 30, 5),
             Key("Ö", "Ö", [], 30, 30, 5),
             Key("Ä", "Ä", [], 30, 30, 5),
-            Key("#", "#", [Key("'", "'", [], 30, 30, 5)], 30, 30, 5),
+            Key("ENTER", "↵", [], 75, 30, 5),  # Wider key for enter
         ],
         [
             # Row 4
@@ -78,16 +78,16 @@ keyboard = Keyboard(
             Key(",", ",", [Key(";", ";", [], 30, 30, 5)], 30, 30, 5),
             Key(".", ".", [Key(":", ":", [], 30, 30, 5)], 30, 30, 5),
             Key("-", "-", [Key("_", "_", [], 30, 30, 5)], 30, 30, 5),
-            Key("SHIFT", "⇧", [], 70, 30, 5),  # Second shift key
+            Key("SHIFT", "⇧", [], 55, 30, 5),  # Second shift key
         ],
         [
             # Row 5
             Key("CTRL", "Ctrl", [], 45, 30, 5),
-            Key("WIN", "⊞", [], 45, 30, 5),
+            Key("WIN", "⊞", [], 30, 30, 5),
             Key("ALT", "Alt", [], 45, 30, 5),
             Key("SPACE", " ", [], 220, 30, 5),  # Wider key for space
-            Key("ALT", "Alt", [], 45, 30, 5),
-            Key("FN", "Fn", [], 45, 30, 5),
+            Key("ALT", "Alt", [], 30, 30, 5),
+            Key("FN", "Fn", [], 30, 30, 5),
             Key("MENU", "☰", [], 45, 30, 5),
             Key("CTRL", "Ctrl", [], 45, 30, 5),
         ],

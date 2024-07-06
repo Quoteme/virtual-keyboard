@@ -8,9 +8,9 @@ class Keyboard:
     keys: List[List[Key]]
 
     @property
-    def width(self):
+    def width(self) -> int:
         return max(sum(key.width + key.margin for key in row) for row in self.keys)
 
     @property
-    def height(self):
+    def height(self) -> int:
         return sum(max(key.height for key in row) for row in self.keys)
