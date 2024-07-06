@@ -14,32 +14,25 @@ dpg.create_context()
 
 # Create the main window
 with dpg.window(tag="Primary Window"):
-    # Create the table for the keyboard layout
-    with dpg.table(header_row=False):
-        for col in range(0, len(keyboard_layout[0])):
-            dpg.add_table_column()
-        for row in keyboard_layout:
-            with dpg.table_row():
-                for key in row:
-                    button_width = 30
-                    button_height = 30
-                    if key == "SPACE":
-                        button_width = 300  # Make the space bar larger
-                    elif key in ["BACKSPACE", "ENTER", "SHIFT", "TAB", "CAPS"]:
-                        button_width = 100  # Make special keys wider
+    for row in keyboard_layout:
+        with dpg.group(horizontal=True):
+            for key in row:
+                button_width = 30
+                button_height = 30
+                if key == "SPACE":
+                    button_width = 300  # Make the space bar larger
+                elif key in ["BACKSPACE", "ENTER", "SHIFT", "TAB", "CAPS"]:
+                    button_width = 100  # Make special keys wider
 
-                    # Create a table cell and place a button inside it
-                    with dpg.table_cell():
-                        dpg.add_button(
-                            label=key, width=button_width, height=button_height
-                        )
+                # Create a table cell and place a button inside it
+                dpg.add_button(label=key, width=button_width, height=button_height)
 
 
 # Create the viewport with a suitable size for the keyboard
 dpg.create_viewport(
     title="Virtual Keyboard",
     width=500,
-    height=300,
+    height=200,
     decorated=True,
     resizable=False,
 )
