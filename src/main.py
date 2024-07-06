@@ -15,8 +15,8 @@ def main():
     # Create the viewport with a suitable size for the keyboard
     dpg.create_viewport(
         title="Virtual Keyboard",
-        width=500,
-        height=200,
+        width=keyboard.width,
+        height=keyboard.height,
         decorated=True,
         resizable=False,
     )
