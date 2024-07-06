@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from typing import List
-from src.model.key import Key
+from model.key import Key
 
 
 @dataclass

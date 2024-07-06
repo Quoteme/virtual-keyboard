@@ -1,5 +1,5 @@
-from src.model.keyboard import Keyboard
-from src.model.key import Key
+from model.keyboard import Keyboard
+from model.key import Key
 
 # # Define the keyboard layout
 # keyboard_layout = [
@@ -12,7 +12,7 @@ from src.model.key import Key
 
 
 # Define the keyboard layout
-de_de = Keyboard(
+keyboard = Keyboard(
     keys=[
         # Row 1
         [
