@@ -8,6 +8,11 @@ mkShell {
     zlib
   ];
   NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
+  nativeBuildInputs = [
+    python312
+    wmctrl
+    ydotool
+  ];
   shellHook = ''
     export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
     # check if the venv is already created
