@@ -1,4 +1,5 @@
 import subprocess
+import asyncio
 from dataclasses import dataclass
 from typing import List
 
@@ -18,39 +19,52 @@ class Daemon:
     3. refocus on `_keyboard` using `kdotool`
     """
 
-    _active: str
-    _keyboard: str
+    _active: str | None = None
+    _keyboard: str | None = None
 
-    def start(self):
+    async def start(self):
         """Start the daemon."""
-        self.fetch_active()
+        await self.fetch_active()
         pass
 
     def stop(self):
         """Stop the daemon."""
         pass
 
-    def fetch_active(self):
+    async def fetch_active(self):
         """Fetch the active window ID to the currentl active window."""
-        result = subprocess.run(["xdotool", "getactivewindow"], stdout=subprocess.PIPE)
-        _active = result.stdout.decode("utf-8").strip()[1:-1]
+        proc = await asyncio.create_subprocess_shell(
+            "kdotool getactivewindow", stdout=subprocess.PIPE
+        )
+        stdout, _ = await proc.communicate()
+        self._active = stdout.decode("utf-8").strip()[1:-1]
 
-    def fetch_keyboard(self):
+    async def fetch_keyboard(self):
         """Fetch the keyboard window ID to the currentl active window."""
-        pass
+        proc = await asyncio.create_subprocess_shell(
+            "kdotool search --name 'Virtual Keyboard'", stdout=subprocess.PIPE
+        )
+        stdout, _ = await proc.communicate()
+        self._keyboard = stdout.decode("utf-8").strip()[1:-1]
 
-    def refocus(self, window: str):
+    async def refocus(self, window: str):
         """Refocus on the given window."""
-        subprocess.run(["kdotool", "windowactivate", window])
+        await asyncio.create_subprocess_shell(f"kdotool windowactivate {window}")
 
-    def type(self, keycodes: List[int], delay: int = 100):
+    async def type(self, keycodes: List[int], delay: int = 100):
         """Type the given keycodes into the active window."""
-        self.refocus(self._active)
+        if self._active is not None:
+            await self.refocus(self._active)
         keydown = [f"{keycode}:0" for keycode in keycodes]
         keyup = [f"{keycode}:1" for keycode in keycodes]
         down_up = [item for pair in zip(keydown, keyup) for item in pair]
-        subprocess.run(
-            ["ydotool", "type", "--delay", str(delay), "--key", *down_up],
+        # subprocess.run(
+        #     ["ydotool", "type", "--delay", str(delay), "--key", *down_up],
+        #     stdout=subprocess.PIPE,
+        # )
+        await asyncio.create_subprocess_shell(
+            f"ydotool type --delay {delay} --key {' '.join(down_up)}",
             stdout=subprocess.PIPE,
         )
-        self.refocus(self._keyboard)
+        if self._keyboard is not None:
+            await self.refocus(self._keyboard)
