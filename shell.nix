@@ -10,8 +10,7 @@ mkShell {
   NIX_LD = lib.fileContents "${stdenv.cc}/nix-support/dynamic-linker";
   nativeBuildInputs = [
     python312
-    wmctrl
-    ydotool
+    kdotool
   ];
   shellHook = ''
     export LD_LIBRARY_PATH=$NIX_LD_LIBRARY_PATH
