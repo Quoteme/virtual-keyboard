@@ -1,3 +1,4 @@
+import asyncio
 from dataclasses import dataclass
 import dearpygui.dearpygui as dpg
 from model.keyboard import Keyboard
@@ -24,6 +25,7 @@ class KeyboardWindow:
                     for key in row:
                         dpg.add_button(
                             label=key.symbol,
+                            callback=lambda: asyncio.run(self.type([key.keycode])),
                             width=key.width,
                             height=key.height,
                         )

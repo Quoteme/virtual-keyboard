@@ -14,7 +14,10 @@ async def main():
 
     # Add the keyboard to the GUI
     keyboard = de_de.keyboard
-    keyboard_window = KeyboardWindow(keyboard)
+    keyboard_window = KeyboardWindow(
+        keyboard=keyboard,
+        type=daemon.type,
+    )
     keyboard_window.add_keyboard()
 
     # Create the viewport with a suitable size for the keyboard
