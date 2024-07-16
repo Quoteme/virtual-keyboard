@@ -1,16 +1,24 @@
+import asyncio
 import dearpygui.dearpygui as dpg
 import model.keyboards.de_de as de_de
-from ui.keyboard import add_keyboard
+from ui.keyboard import KeyboardWindow
+from model.daemon import Daemon
 
 
-def main():
-    keyboard = de_de.keyboard
+async def main():
+    daemon = Daemon()
+    await daemon.start()
 
     # Create the DearPyGui context
     dpg.create_context()
 
     # Add the keyboard to the GUI
-    add_keyboard(keyboard)
+    keyboard = de_de.keyboard
+    keyboard_window = KeyboardWindow(
+        keyboard=keyboard,
+        type=daemon.type,
+    )
+    keyboard_window.add_keyboard()
 
     # Create the viewport with a suitable size for the keyboard
     dpg.create_viewport(
@@ -25,9 +33,12 @@ def main():
     dpg.setup_dearpygui()
     dpg.show_viewport()
     dpg.set_primary_window("Primary Window", True)
+    await daemon.fetch_keyboard()
     dpg.start_dearpygui()
     dpg.destroy_context()
 
+    daemon.stop()
+
 
 if __name__ == "__main__":
-    main()
+    asyncio.run(main())

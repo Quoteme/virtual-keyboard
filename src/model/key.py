@@ -6,8 +6,7 @@ from typing import List
 class Key:
     """Key class represents a key on the keyboard."""
 
-    # the letter typed when the key is pressed
-    value: str
+    keycode: int
     # the symbol displayed in the GUI for the key
     symbol: str
     # When long-pressing a key, these keys will be displayed
@@ -18,4 +17,4 @@ class Key:
     margin: int = 5
 
     def __str__(self):
-        return f"{self.symbol} {self.value}"
+        return f"{self.symbol} {self.keycode}"
