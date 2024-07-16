@@ -56,11 +56,12 @@ class Daemon:
         """Type the given keycodes into the active window."""
         if self._active is not None:
             await self.refocus(self._active)
-        keydown = [f"{keycode}:0" for keycode in keycodes]
-        keyup = [f"{keycode}:1" for keycode in keycodes]
+        keydown = [f"{keycode}:1" for keycode in keycodes]
+        keyup = [f"{keycode}:0" for keycode in keycodes]
         down_up = [item for pair in zip(keydown, keyup) for item in pair]
+        print(f"ydotool type --key-delay={delay} {' '.join(down_up)}")
         await asyncio.create_subprocess_shell(
-            f"ydotool type --key-delay {delay} {' '.join(down_up)}",
+            f"ydotool type --key-delay={delay} {' '.join(down_up)}",
             stdout=subprocess.PIPE,
         )
         # wait the appropriate delay for the key to be typed
