@@ -49,8 +49,9 @@ class Daemon:
 
     async def refocus(self, window: str):
         """Refocus on the given window."""
-        print(f'running: kdotool windowactivate "{window}"')
         await asyncio.create_subprocess_shell(f'kdotool windowactivate "{window}"')
+        # wait for the window to be focused
+        await asyncio.sleep(0.1)
 
     async def type(self, keycodes: List[int], delay: int = 100):
         """Type the given keycodes into the active window."""
@@ -59,12 +60,10 @@ class Daemon:
         keydown = [f"{keycode}:1" for keycode in keycodes]
         keyup = [f"{keycode}:0" for keycode in keycodes]
         down_up = [item for pair in zip(keydown, keyup) for item in pair]
-        print(f"ydotool type --key-delay={delay} {' '.join(down_up)}")
-        await asyncio.create_subprocess_shell(
-            f"ydotool type --key-delay={delay} {' '.join(down_up)}",
-            stdout=subprocess.PIPE,
-        )
+        cmd = f"ydotool key --key-delay={delay} {' '.join(down_up)}"
+        await asyncio.create_subprocess_shell(cmd, stdout=subprocess.PIPE)
         # wait the appropriate delay for the key to be typed
         await asyncio.sleep(delay / 1000 * len(down_up))
-        if self._keyboard is not None:
-            await self.refocus(self._keyboard)
+        print("=========================")
+        # if self._keyboard is not None:
+        #     await self.refocus(self._keyboard)
