@@ -1,5 +1,6 @@
 import subprocess
 import asyncio
+import threading
 from dataclasses import dataclass
 from typing import List
 
@@ -17,19 +18,31 @@ class Daemon:
     1. focus on `_active` using `kdotool`
     2. type the text using `ydotool`
     3. refocus on `_keyboard` using `kdotool`
+
+    Args:
+        _active: str | None = None: The currently active / focused window.
+        _keyboard: str | None = None: The window ID of the keyboard.
+        _thread: threading.Thread | None = None: The thread used to detect if a new window is focused.
+        _running: bool = False: Whether the daemon is running or not.
     """
 
     _active: str | None = None
     _keyboard: str | None = None
+    _thread: threading.Thread | None = None
+    _running: bool = False
 
     async def start(self):
         """Start the daemon."""
         await self.fetch_active()
-        pass
+        self._running = True
+        self.start_window_change_detection()
 
     def stop(self):
         """Stop the daemon."""
-        pass
+        self._running = False
+        if self._thread is not None:
+            # force the thread to stop
+            self._thread.join()
 
     async def fetch_active(self):
         """Fetch the active window ID to the currentl active window."""
@@ -37,7 +50,11 @@ class Daemon:
             "kdotool getactivewindow", stdout=subprocess.PIPE
         )
         stdout, _ = await proc.communicate()
-        self._active = stdout.decode("utf-8").strip()
+        active = stdout.decode("utf-8").strip()
+        # we never want to set the keyboard as the active window,
+        # as that would mean, we would type text into the keyboard window itself
+        if active != self._keyboard:
+            self._active = stdout.decode("utf-8").strip()
 
     async def fetch_keyboard(self):
         """Fetch the keyboard window ID to the currentl active window."""
@@ -64,6 +81,25 @@ class Daemon:
         await asyncio.create_subprocess_shell(cmd, stdout=subprocess.PIPE)
         # wait the appropriate delay for the key to be typed
         await asyncio.sleep(delay / 1000 * len(down_up))
-        print("=========================")
         # if self._keyboard is not None:
         #     await self.refocus(self._keyboard)
+
+    async def detect_active_window_change(self):
+        """Periodically poll the currently active window.
+
+        If the active window changes, call `on_window_active_change`.
+        """
+        while self._running:
+            await asyncio.sleep(0.1)
+            await self.fetch_active()
+            print(self._active)
+
+    def start_window_change_detection(self):
+        def start_thread():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            loop.run_until_complete(self.detect_active_window_change())
+            loop.close()
+
+        _thread = threading.Thread(target=start_thread)
+        _thread.start()
